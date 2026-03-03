@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeetFlixy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 340px;
+    min-height: 420px;
+    background: #0a0a0a;
+    font-family: 'Cairo', sans-serif;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a0000 0%, #2d0000 50%, #1a0000 100%);
+    border-bottom: 2px solid #e50914;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e50914, #ff4444, #e50914, transparent);
+  }
+  .logo-wrap {
+    width: 44px;
+    height: 44px;
+    background: #e50914;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(229,9,20,0.6);
+  }
+  .logo-wrap img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+  .brand-name {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff, #e50914);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .brand-sub {
+    font-size: 10px;
+    color: #888;
+    letter-spacing: 1px;
+  }
+  .status-dot {
+    margin-right: auto;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #444;
+    box-shadow: 0 0 6px #444;
+    transition: all 0.3s;
+  }
+  .status-dot.online { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+  .status-dot.loading { background: #ffaa00; box-shadow: 0 0 10px #ffaa00; animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* Body */
+  .body { padding: 20px; }
+
+  /* Open Netflix Button */
+  .btn-netflix {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #e50914, #b20710);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(229,9,20,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-netflix::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s;
+  }
+  .btn-netflix:hover::before { left: 100%; }
+  .btn-netflix:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(229,9,20,0.6); }
+  .btn-netflix:active { transform: translateY(0); }
+  .btn-netflix:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* Timer */
+  .timer-wrap {
+    display: none;
+    margin-top: 14px;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 12px 16px;
+    align-items: center;
+    gap: 10px;
+  }
+  .timer-wrap.show { display: flex; }
+  .timer-icon { font-size: 20px; }
+  .timer-text { font-size: 13px; color: #aaa; }
+  .timer-count { font-size: 22px; font-weight: 900; color: #e50914; margin-right: auto; }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0;
+    color: #444;
+    font-size: 11px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #333, transparent);
+  }
+
+  /* Action Buttons */
+  .actions {
+    display: none;
+    gap: 10px;
+  }
+  .actions.show { display: flex; }
+  .btn-action {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s;
+  }
+  .btn-action .icon { font-size: 22px; }
+  .btn-link {
+    background: linear-gradient(135deg, #1a0000, #2d0000);
+    color: #e50914;
+    border: 1px solid #e50914;
+    box-shadow: 0 0 15px rgba(229,9,20,0.2);
+  }
+  .btn-link:hover { background: #e50914; color: #fff; box-shadow: 0 0 20px rgba(229,9,20,0.5); transform: translateY(-2px); }
+  .btn-account {
+    background: linear-gradient(135deg, #111, #1e1e1e);
+    color: #ccc;
+    border: 1px solid #333;
+  }
+  .btn-account:hover { background: #222; color: #fff; border-color: #555; transform: translateY(-2px); }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #111;
+    border: 1px solid #e50914;
+    border-radius: 16px;
+    padding: 24px;
+    width: 290px;
+    box-shadow: 0 0 40px rgba(229,9,20,0.3);
+  }
+  .modal h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #fff;
+    text-align: center;
+  }
+  .modal-input {
+    width: 100%;
+    padding: 11px 14px;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 2px;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.3s;
+  }
+  .modal-input:focus { border-color: #e50914; }
+  .modal-input::placeholder { color: #555; letter-spacing: 0; }
+  .modal-btns { display: flex; gap: 8px; }
+  .btn-confirm {
+    flex: 1;
+    padding: 11px;
+    background: #e50914;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-confirm:hover { background: #b20710; }
+  .btn-cancel {
+    flex: 1;
+    padding: 11px;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #aaa;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-cancel:hover { background: #333; color: #fff; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px;
+    color: #fff;
+    white-space: nowrap;
+    transition: transform 0.3s ease;
+    z-index: 200;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: #00ff88; color: #00ff88; }
+  .toast.error { border-color: #e50914; color: #e50914; }
+  .toast.info { border-color: #4488ff; color: #4488ff; }
+
+  /* Loading spinner */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+  }
+  .spinner.show { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Netflix status indicator */
+  .netflix-status {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #222;
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .netflix-status .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #444;
+    flex-shrink: 0;
+  }
+  .netflix-status.logged-in .dot { background: #00ff88; }
+  .netflix-status.logged-in { color: #00ff88; border-color: #00ff88; }
+  .netflix-status.logged-out .dot { background: #e50914; }
+  .netflix-status.logged-out { color: #e50914; border-color: #e50914; }
+</style>
+</head>
+<body>
+
+
+<div class="header">
+  <div class="logo-wrap">
+    <img src="icon.png" alt="logo">
+  </div>
+  <div>
+    <div class="brand-name">FEETFLIXY</div>
+    <div class="brand-sub">NETFLIX MANAGER</div>
+  </div>
+  <div class="status-dot" id="statusDot"></div>
+</div>
+
+
+<div class="body">
+
+ 
+  <button class="btn-netflix" id="btnNetflix">
+    <span>▶</span>
+    <span>فتح Netflix</span>
+    <div class="spinner" id="btnSpinner"></div>
+  </button>
+
+
+  <div class="timer-wrap" id="timerWrap">
+    <span class="timer-icon">⏳</span>
+    <span class="timer-text">انتظار التحقق...</span>
+    <span class="timer-count" id="timerCount">5</span>
+  </div>
+
+  <div class="netflix-status" id="netflixStatus">
+    <div class="dot"></div>
+    <span id="statusText">تحقق من الحالة...</span>
+  </div>
+
+
+  <div class="divider" id="actionsDivider" style="display:none">الأدوات</div>
+
+ 
+  <div class="actions" id="actionButtons">
+    <button class="btn-action btn-link" id="btnGetLink">
+      <span class="icon">🔗</span>
+      <span>أخذ رابط</span>
+    </button>
+    <button class="btn-action btn-account" id="btnGetAccount">
+      <span class="icon">🔑</span>
+      <span>أخذ حساب</span>
+    </button>
+  </div>
+
+</div>
+
+
+<div class="modal-overlay" id="keyModal">
+  <div class="modal">
+    <h3>🔑 أدخل مفتاح الحساب</h3>
+    <input
+      class="modal-input"
+      id="keyInput"
+      type="text"
+      placeholder="KEY001"
+      maxlength="20"
+    >
+    <div class="modal-btns">
+      <button class="btn-confirm" id="btnConfirmKey">تأكيد</button>
+      <button class="btn-cancel" id="btnCancelKey">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script src="popup.js"></script>
+</body>
+</html>
