@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FeetFlixy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Netflix account manager",
   "permissions": [
     "activeTab",
@@ -11,7 +11,7 @@
     "scripting"
   ],
   "host_permissions": [
-    "https://www.netflix.com/*"
+    "*://*.netflix.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
